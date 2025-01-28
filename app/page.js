@@ -14,6 +14,10 @@ const DataRemovalTool = () => {
       .map((item) => item.trim())
       .filter((item) => !oldDataSet.has(item));
 
+    if (filteredNewData.length === 0) {
+      window.alert('No data to remove.');
+    }
+
     setResult(filteredNewData.join('\n'));
   };
 
@@ -21,6 +25,12 @@ const DataRemovalTool = () => {
     setOldData('');
     setNewData('');
     setResult('');
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(result).then(() => {
+      window.alert('Processed data copied to clipboard!');
+    });
   };
 
   return (
@@ -61,11 +71,17 @@ const DataRemovalTool = () => {
         <div className="w-full max-w-3xl p-6 bg-gray-700 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold text-orange-500 mb-4">Processed Data:</h2>
           <textarea
-            className="w-full p-3 bg-gray-600 border border-gray-500 rounded-md text-base text-white"
+            className="w-full p-3 bg-gray-600 border border-gray-500 rounded-md text-base text-white mb-4"
             rows={6}
             value={result}
             readOnly
           ></textarea>
+          <button
+            onClick={handleCopy}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-medium shadow-md"
+          >
+            Copy All
+          </button>
         </div>
       )}
     </div>
