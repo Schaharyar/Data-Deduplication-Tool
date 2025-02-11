@@ -1,0 +1,22 @@
+<svg
+  width="512"
+  height="512"
+  viewBox="0 0 64 64"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Outer Ring Animation -->
+  <circle cx="32" cy="32" r="30" stroke="orange" stroke-width="5" fill="none">
+    <animate attributeName="r" values="30;27;30" dur="1.5s" repeatCount="indefinite" />
+  </circle>
+
+  <!-- Background Circle -->
+  <circle cx="32" cy="32" r="25" fill="black" />
+
+  <!-- **Extra Huge & Ultra Bold "DF" Inside the Ring** -->
+  <text x="50%" y="56%" font-size="34" fill="orange" font-weight="900"
+    text-anchor="middle" alignment-baseline="middle">
+    DF
+    <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite" />
+  </text>
+</svg>
