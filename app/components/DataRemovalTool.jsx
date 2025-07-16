@@ -1,13 +1,18 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { ClipboardEdit, ClipboardCheck, X, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+
+if (typeof window !== "undefined" && typeof window.requestIdleCallback !== "function") {
+  window.requestIdleCallback = (cb) => setTimeout(cb, 1);
+}
 
 const DataRemovalTool = () => {
   const [oldData, setOldData] = useState("");
   const [newData, setNewData] = useState("");
-  const [result, setResult] = useState("");
+  const resultRef = useRef("");
+  const [renderTrigger, setRenderTrigger] = useState(0);
   const [caseSensitive, setCaseSensitive] = useState(false);
   const [trimWhitespace, setTrimWhitespace] = useState(true);
   const [ignoreEmptyLines, setIgnoreEmptyLines] = useState(true);
@@ -24,7 +29,7 @@ const DataRemovalTool = () => {
 
     setIsProcessing(true);
 
-    setTimeout(() => {
+    requestIdleCallback(() => {
       try {
         const processItem = (item) => {
           let processed = trimWhitespace ? item.trim() : item;
@@ -55,28 +60,30 @@ const DataRemovalTool = () => {
           toast.success(`Found ${filteredNewData.length} unique items`);
         }
 
-        setResult(filteredNewData.join("\n"));
+        resultRef.current = filteredNewData.join("\n");
+        setRenderTrigger(prev => prev + 1); // trigger re-render
       } catch (error) {
         toast.error("An error occurred during processing");
         console.error(error);
       } finally {
         setIsProcessing(false);
       }
-    }, 100);
+    });
   };
 
   const handleClear = () => {
     setOldData("");
     setNewData("");
-    setResult("");
+    resultRef.current = "";
+    setRenderTrigger(prev => prev + 1);
     setCopied(false);
     toast.info("Cleared all data");
   };
 
   const handleCopy = () => {
-    if (!result) return;
-    
-    navigator.clipboard.writeText(result).then(() => {
+    if (!resultRef.current) return;
+
+    navigator.clipboard.writeText(resultRef.current).then(() => {
       setCopied(true);
       toast.success("Copied to clipboard");
       setTimeout(() => setCopied(false), 2000);
@@ -100,9 +107,8 @@ const DataRemovalTool = () => {
         <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-orange-400 text-center">
           Data Deduplication Tool
         </h1>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-          {/* Old Data Section */}
           <div className="bg-gray-800 rounded-lg shadow-lg p-4">
             <h2 className="text-lg font-semibold text-orange-300 mb-2">Reference Data</h2>
             <textarea
@@ -116,7 +122,6 @@ const DataRemovalTool = () => {
             </div>
           </div>
 
-          {/* New Data Section */}
           <div className="bg-gray-800 rounded-lg shadow-lg p-4">
             <h2 className="text-lg font-semibold text-orange-300 mb-2">Data to Filter</h2>
             <textarea
@@ -131,7 +136,6 @@ const DataRemovalTool = () => {
           </div>
         </div>
 
-        {/* Options Section */}
         <div className="bg-gray-800 rounded-lg shadow-lg p-4 mb-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <label className="flex items-center gap-2 cursor-pointer">
@@ -202,12 +206,11 @@ const DataRemovalTool = () => {
           </div>
         </div>
 
-        {/* Results Section */}
-        {result && (
+        {resultRef.current && (
           <div className="bg-gray-800 rounded-lg shadow-lg p-4 relative">
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-xl font-semibold text-orange-400">
-                Results: {countLines(result)} unique items
+                Results: {countLines(resultRef.current)} unique items
               </h2>
               <button
                 onClick={handleCopy}
@@ -220,11 +223,11 @@ const DataRemovalTool = () => {
             <textarea
               ref={resultTextareaRef}
               className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-sm md:text-base text-gray-100 h-64"
-              value={result}
+              value={resultRef.current}
               readOnly
             />
             <div className="text-xs text-gray-400 mt-1">
-              Lines: {countLines(result)} | Characters: {countChars(result)}
+              Lines: {countLines(resultRef.current)} | Characters: {countChars(resultRef.current)}
             </div>
           </div>
         )}
