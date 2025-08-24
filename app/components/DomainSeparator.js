@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import { Button } from "@/components/ui/button";
 import { Copy, Loader2, ChevronLeft, ChevronRight, Download, X, Check } from "lucide-react";
 import { toast } from "sonner";
+import DomainSeparatorGuide from "./DomainSeparatorGuide";
 
 export default function DomainSeparator() {
   const [inputData, setInputData] = useState("");
@@ -147,7 +148,8 @@ export default function DomainSeparator() {
   };
 
   return (
-    <div className="p-6 min-h-screen text-gray-100 flex flex-col items-center bg-gradient-to-br from-gray-900 via-gray-800 to-orange-900">
+    <>
+    <div className="p-6 text-gray-100 flex flex-col items-center bg-gradient-to-br from-gray-900 via-gray-800 to-orange-900">
       <h1 className="text-3xl font-bold mb-4 text-orange-400">Domain Separator</h1>
       
       {/* Stats Bar */}
@@ -318,5 +320,10 @@ export default function DomainSeparator() {
         </Button>
       </div>
     </div>
+
+    <div>
+      <DomainSeparatorGuide />
+    </div>
+    </>
   );
 }
