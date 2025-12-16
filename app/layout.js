@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "DataForge - Powerful Data Tools",
+  title: "DumbFly - Fly beyond expectations.",
   description:
     "DataForge is your all-in-one toolkit for handling and processing data efficiently.",
 };
