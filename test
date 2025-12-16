@@ -14,7 +14,7 @@ const DataRemovalTool = () => {
     const oldDataSet = new Set(
       oldData.split("\n").map((item) => (caseSensitive ? item.trim() : item.trim().toLowerCase()))
     );
-    
+  
     const filteredNewData = newData
       .split("\n")
       .map((item) => item.trim())
